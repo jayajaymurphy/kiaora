@@ -1,0 +1,285 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Jun 19 19:19:58 2019
+
+@author: Sachira Jayakody
+"""
+import pandas as pd
+import numpy as np
+import scipy.stats as sm
+
+def Cholesky(rho):
+    L = [[0.0] * len(rho) for b in range(len(rho))]
+    for i in range(len(rho)):
+        for j in range(i+1):
+            s = sum(L[i][k] * L[j][k] for k in range(j))
+            L[i][j] = ((rho[i][i] - s)**(1/2)) if (i == j) else \
+                      (1.0 / L[j][j] * (rho[i][j] - s))
+
+    return L
+
+
+def appLookup(item, table, column):
+    answer = table[0][column]
+    for element in table:
+
+        if element[0]<item:
+            answer=element[column]
+        
+    return answer
+
+def Lookup(item, table, column):
+    answer=""
+    for element in table:
+        if element[0]==item:
+            answer=element[column]
+    
+    return answer
+
+AAA=[[0,"AAA"],[0.92,"AA"],[0.965,"A"],[0.99,"BBB"],[1,"BB"],[1,"B"],[1,"CCC"],[1,"D"]]
+AA=[[0,"AAA"],[0.04,"AA"],[0.91,"A"],[0.955,"BBB"],[0.975,"BB"],[0.99,"B"],[1,"CCC"],[1,"D"]]
+A=[[0,"AAA"],[0.01,"AA"],[0.07,"A"],[0.889,"BBB"],[0.914,"BB"],[0.944,"B"],[0.974,"CCC"],[0.999,"D"]]
+BBB=[[0,"AAA"],[0.0005,"AA"],[0.02,"A"],[0.07,"BBB"],[0.85,"BB"],[0.905,"B"],[0.96,"CCC"],[0.995,"D"]]
+BB=[[0,"AAA"],[0,"AA"],[0.0005,"A"],[0.0025,"BBB"],[0.135,"BB"],[0.875,"B"],[0.97,"CCC"],[0.99,"D"]]
+B=[[0,"AAA"],[0,"AA"],[0,"A"],[0.005,"BBB"],[0.015,"BB"],[0.145,"B"],[0.83,"CCC"],[0.96,"D"]]
+CCC=[[0,"AAA"],[0,"AA"],[0,"A"],[0,"BBB"],[0.025,"BB"],[0.09,"B"],[0.26,"CCC"],[0.85,"D"]]
+D = [[0,"D"],[1,"D"]]
+
+AAA.reverse()
+AAAnorm=[]
+lastvalue = 0
+for i,element in enumerate(AAA):
+
+    if i ==0:
+        normrow=[-sm.norm.ppf(1),element[1]]
+    else:
+        normrow=[-sm.norm.ppf(lastvalue),element[1]]
+    AAAnorm.append(normrow)
+    lastvalue = element[0]
+    
+AAA.reverse()
+
+AA.reverse()
+AAnorm=[]
+lastvalue = 0
+for i,element in enumerate(AA):
+
+    if i ==0:
+        normrow=[-sm.norm.ppf(1),element[1]]
+    else:
+        normrow=[-sm.norm.ppf(lastvalue),element[1]]
+    AAnorm.append(normrow)
+    lastvalue = element[0]
+    
+AA.reverse()
+
+A.reverse()
+Anorm=[]
+lastvalue = 0
+for i,element in enumerate(A):
+
+    if i ==0:
+        normrow=[-sm.norm.ppf(1),element[1]]
+    else:
+        normrow=[-sm.norm.ppf(lastvalue),element[1]]
+    Anorm.append(normrow)
+    lastvalue = element[0]
+    
+A.reverse()
+
+BBB.reverse()
+BBBnorm=[]
+lastvalue = 0
+for i,element in enumerate(BBB):
+
+    if i ==0:
+        normrow=[-sm.norm.ppf(1),element[1]]
+    else:
+        normrow=[-sm.norm.ppf(lastvalue),element[1]]
+    BBBnorm.append(normrow)
+    lastvalue = element[0]
+    
+BBB.reverse()
+
+BB.reverse()
+BBnorm=[]
+lastvalue = 0
+for i,element in enumerate(BB):
+
+    if i ==0:
+        normrow=[-sm.norm.ppf(1),element[1]]
+    else:
+        normrow=[-sm.norm.ppf(lastvalue),element[1]]
+    BBnorm.append(normrow)
+    lastvalue = element[0]
+    
+BB.reverse()
+
+B.reverse()
+Bnorm=[]
+lastvalue = 0
+for i,element in enumerate(B):
+
+    if i ==0:
+        normrow=[-sm.norm.ppf(1),element[1]]
+    else:
+        normrow=[-sm.norm.ppf(lastvalue),element[1]]
+    Bnorm.append(normrow)
+    lastvalue = element[0]
+    
+B.reverse()
+
+CCC.reverse()
+CCCnorm=[]
+lastvalue = 0
+for i,element in enumerate(CCC):
+
+    if i ==0:
+        normrow=[-sm.norm.ppf(1),element[1]]
+    else:
+        normrow=[-sm.norm.ppf(lastvalue),element[1]]
+    CCCnorm.append(normrow)
+    lastvalue = element[0]
+    
+CCC.reverse()
+
+randfile=pd.DataFrame.from_csv("d:/Randset1.csv")
+
+portrating1 = []
+portrating2 = []
+portrating3 = []
+portrating4 = []
+portrating5 = []
+portrating6 = []
+portrating7 = []
+portrating8 = []
+portrating9 = []
+portrating10 = []
+portrating11 = []
+
+totrating =[]
+
+
+DefaultforDTrench = []
+DefaultforCTrench = []
+DefaultforBTrench = []
+DefaultforATrench = []
+
+portratings2step=[]
+
+mcorr = 0.3 
+corrmatrix=[[mcorr for x in range(y)] + [1] for y in range(20)]
+ch = Cholesky(corrmatrix)
+
+for i, row in enumerate(randfile.values):
+    
+    row=randfile.values[i]
+    PortValue = 0
+    Z0=row[0]
+    Z1=ch[1][0]*row[0]+ch[1][1]*row[1]
+    Z2=ch[2][0]*row[0]+ch[2][1]*row[1]+ch[2][2]*row[2]
+    Z3=ch[3][0]*row[0]+ch[3][1]*row[1]+ch[3][2]*row[2]+ch[3][3]*row[3]
+    Z4=ch[4][0]*row[0]+ch[4][1]*row[1]+ch[4][2]*row[2]+ch[4][3]*row[3]+ch[4][4]*row[4]
+    Z5=ch[5][0]*row[0]+ch[5][1]*row[1]+ch[5][2]*row[2]+ch[5][3]*row[3]+ch[5][4]*row[4]+ch[5][5]*row[5]
+    Z6=ch[6][0]*row[0]+ch[6][1]*row[1]+ch[6][2]*row[2]+ch[6][3]*row[3]+ch[6][4]*row[4]+ch[6][5]*row[5]+ch[6][6]*row[6]
+    Z7=ch[7][0]*row[0]+ch[7][1]*row[1]+ch[7][2]*row[2]+ch[7][3]*row[3]+ch[7][4]*row[4]+ch[7][5]*row[5]+ch[7][6]*row[6]+ch[7][7]*row[7]
+    Z8=ch[8][0]*row[0]+ch[8][1]*row[1]+ch[8][2]*row[2]+ch[8][3]*row[3]+ch[8][4]*row[4]+ch[8][5]*row[5]+ch[8][6]*row[6]+ch[8][7]*row[7]+ch[8][8]*row[8]
+    Z9=ch[9][0]*row[0]+ch[9][1]*row[1]+ch[9][2]*row[2]+ch[9][3]*row[3]+ch[9][4]*row[4]+ch[9][5]*row[5]+ch[9][6]*row[6]+ch[9][7]*row[7]+ch[9][8]*row[8]+ch[9][9]*row[9]
+    Z10=ch[10][0]*row[0]+ch[10][1]*row[1]+ch[10][2]*row[2]+ch[10][3]*row[3]+ch[10][4]*row[4]+ch[10][5]*row[5]+ch[10][6]*row[6]+ch[10][7]*row[7]+ch[10][8]*row[8]+ch[10][9]*row[9]+ch[10][10]*row[10]
+    Z11=ch[11][0]*row[0]+ch[11][1]*row[1]+ch[11][2]*row[2]+ch[11][3]*row[3]+ch[11][4]*row[4]+ch[11][5]*row[5]+ch[11][6]*row[6]+ch[11][7]*row[7]+ch[11][8]*row[8]+ch[11][9]*row[9]+ch[11][10]*row[10]+ch[11][11]*row[11]
+    Z12=ch[12][0]*row[0]+ch[12][1]*row[1]+ch[12][2]*row[2]+ch[12][3]*row[3]+ch[12][4]*row[4]+ch[12][5]*row[5]+ch[12][6]*row[6]+ch[12][7]*row[7]+ch[12][8]*row[8]+ch[12][9]*row[9]+ch[12][10]*row[10]+ch[12][11]*row[11]+ch[12][12]*row[12]
+    Z13=ch[13][0]*row[0]+ch[13][1]*row[1]+ch[13][2]*row[2]+ch[13][3]*row[3]+ch[13][4]*row[4]+ch[13][5]*row[5]+ch[13][6]*row[6]+ch[13][7]*row[7]+ch[13][8]*row[8]+ch[13][9]*row[9]+ch[13][10]*row[10]+ch[13][11]*row[11]+ch[13][12]*row[12]+ch[13][13]*row[13]
+    Z14=ch[14][0]*row[0]+ch[14][1]*row[1]+ch[14][2]*row[2]+ch[14][3]*row[3]+ch[14][4]*row[4]+ch[14][5]*row[5]+ch[14][6]*row[6]+ch[14][7]*row[7]+ch[14][8]*row[8]+ch[14][9]*row[9]+ch[14][10]*row[10]+ch[14][11]*row[11]+ch[14][12]*row[12]+ch[14][13]*row[13]+ch[14][14]*row[14]
+    Z15=ch[15][0]*row[0]+ch[15][1]*row[1]+ch[15][2]*row[2]+ch[15][3]*row[3]+ch[15][4]*row[4]+ch[15][5]*row[5]+ch[15][6]*row[6]+ch[15][7]*row[7]+ch[15][8]*row[8]+ch[15][9]*row[9]+ch[15][10]*row[10]+ch[15][11]*row[11]+ch[15][12]*row[12]+ch[15][13]*row[13]+ch[15][14]*row[14]+ch[15][15]*row[15]
+    Z16=ch[16][0]*row[0]+ch[16][1]*row[1]+ch[16][2]*row[2]+ch[16][3]*row[3]+ch[16][4]*row[4]+ch[16][5]*row[5]+ch[16][6]*row[6]+ch[16][7]*row[7]+ch[16][8]*row[8]+ch[16][9]*row[9]+ch[16][10]*row[10]+ch[16][11]*row[11]+ch[16][12]*row[12]+ch[16][13]*row[13]+ch[16][14]*row[14]+ch[16][15]*row[15]+ch[16][16]*row[16]
+    Z17=ch[17][0]*row[0]+ch[17][1]*row[1]+ch[17][2]*row[2]+ch[17][3]*row[3]+ch[17][4]*row[4]+ch[17][5]*row[5]+ch[17][6]*row[6]+ch[17][7]*row[7]+ch[17][8]*row[8]+ch[17][9]*row[9]+ch[17][10]*row[10]+ch[17][11]*row[11]+ch[17][12]*row[12]+ch[17][13]*row[13]+ch[17][14]*row[14]+ch[17][15]*row[15]+ch[17][16]*row[16]+ch[17][17]*row[17]
+    Z18=ch[18][0]*row[0]+ch[18][1]*row[1]+ch[18][2]*row[2]+ch[18][3]*row[3]+ch[18][4]*row[4]+ch[18][5]*row[5]+ch[18][6]*row[6]+ch[18][7]*row[7]+ch[18][8]*row[8]+ch[18][9]*row[9]+ch[18][10]*row[10]+ch[18][11]*row[11]+ch[18][12]*row[12]+ch[18][13]*row[13]+ch[18][14]*row[14]+ch[18][15]*row[15]+ch[18][16]*row[16]+ch[18][17]*row[17]+ch[18][18]*row[18]
+    Z19=ch[19][0]*row[0]+ch[19][1]*row[1]+ch[19][2]*row[2]+ch[19][3]*row[3]+ch[19][4]*row[4]+ch[19][5]*row[5]+ch[19][6]*row[6]+ch[19][7]*row[7]+ch[19][8]*row[8]+ch[19][9]*row[9]+ch[19][10]*row[10]+ch[19][11]*row[11]+ch[19][12]*row[12]+ch[19][13]*row[13]+ch[19][14]*row[14]+ch[19][15]*row[15]+ch[19][16]*row[16]+ch[19][17]*row[17]+ch[19][18]*row[18]+ch[19][19]*row[19]
+
+    Z = [Z0,Z1,Z2,Z3,Z4,Z5,Z6,Z7,Z8,Z9,Z10,Z11,Z12,Z13,Z14,Z15,Z16,Z17,Z18,Z19]
+
+    newrating1 = appLookup(Z0,CCCnorm,1)
+    portrating1.append(newrating1)
+    
+    if newrating1 == "D":
+        DefaultforDTrench.append("D")
+        for i in range(0,4):
+            if newrating1 == "AAA":
+                portrating2.append(appLookup(Z[i],AAAnorm,1)) 
+            elif newrating1 == "AA":
+                portrating2.append(appLookup(Z[i],AAnorm,1)) 
+            elif newrating1 == "A":
+                portrating2.append(appLookup(Z[i],Anorm,1))
+            elif newrating1 == "BBB":
+                portrating2.append(appLookup(Z[i],BBBnorm,1))
+            elif newrating1 == "BB":
+                portrating2.append(appLookup(Z[i],BBnorm,1))
+            elif newrating1 == "B":
+                portrating2.append(appLookup(Z[i],Bnorm,1))
+            elif newrating1 == "CCC":
+                portrating2.append(appLookup(Z[i],CCCnorm,1))
+            totrating.append([portrating1,portrating2])
+                
+            for i in range (5,9):
+                if portrating2 == "D":
+                    DefaultforDTrench.append("D")
+                    
+                    if portrating2 == "AAA":
+                        portrating3.append(appLookup(Z[i],AAAnorm,1)) 
+                    elif portrating2 == "AA":
+                        portrating3.append(appLookup(Z[i],AAnorm,1)) 
+                    elif portrating2 == "A":
+                        portrating3.append(appLookup(Z[i],Anorm,1))
+                    elif portrating2 == "BBB":
+                        portrating3.append(appLookup(Z[i],BBBnorm,1))
+                    elif portrating2 == "BB":
+                        portrating3.append(appLookup(Z[i],BBnorm,1))
+                    elif portrating2 == "B":
+                        portrating3.append(appLookup(Z[i],Bnorm,1))
+                    elif portrating2 == "CCC":
+                        portrating3.append(appLookup(Z[i],CCCnorm,1))
+                    elif portrating2 == "D":
+                            DefaultforCTrench.append("D")
+                    
+    
+    
+"""for i, row in enumerate(randfile.values):
+    row = randfile.values[i]
+    firstyearrating = appLookup(row[1],CCCnorm,1)
+    for i in range(0,4):
+        if firstyearrating == "AAA":
+            portrating2.append(appLookup(Z[i],AAAnorm,1))
+        elif firstyearrating == "AA":
+            portrating2.append(appLookup(Z[i],AAnorm,1))
+        elif firstyearrating == "A":
+            portrating2.append(appLookup(Z[i],Anorm,1))
+        elif firstyearrating == "BBB":
+            portrating2.append(appLookup(Z[i],BBBnorm,1))
+        elif firstyearrating == "BB":
+            portrating2.append(appLookup(Z[i],BBnorm,1))
+        elif firstyearrating == "B":
+            portrating2.append(appLookup(Z[i],Bnorm,1))
+        elif firstyearrating == "CCC":
+            portrating2.append(appLookup(Z[i],CCCnorm,1))
+        elif firstyearrating == "D":
+            DefaultforDTrench.append("D")
+        
+        for i in range (5,9):
+                if portrating2[1] == "AAA":
+                    portrating3.append(appLookup(Z[5],AAAnorm,1))
+                elif portrating2[1] == "AA":
+                    portrating3.append(appLookup(Z[5],AAnorm,1))
+                elif portrating2[1] == "A":
+                    portrating3.append(appLookup(Z[5],Anorm,1))
+                elif portrating2[1] == "BBB":
+                    portrating3.append(appLookup(Z[5],BBBnorm,1))
+                elif portrating2[1] == "BB":
+                    portrating3.append(appLookup(Z[5],BBnorm,1))
+                elif portrating2[1] == "B":
+                    portrating3.append(appLookup(Z[5],Bnorm,1))
+                elif portrating2[1] == "CCC":
+                    portrating3.append(appLookup(Z[5],CCCnorm,1))
+                elif portrating2[1] == "D":
+                    DefaultforCTrench.append(appLookup(row[3],D,1))"""
+                             
+          
